@@ -1,0 +1,22 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+#map
+
+
+```{r out.width='100%', echo=FALSE,}
+library(leaflet)
+leaflet() %>% addProviderTiles("Esri.WorldStreetMap") %>%
+  setView( 117.2648, 36.6613, zoom = 17) %>%
+  addPopups(
+     117,36,
+    'jinan_jilei'
+  )
+```

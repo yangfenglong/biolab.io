@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Plot on A Hugo website</title>
+    <link>/tags/plot/</link>
+    <description>Recent content in Plot on A Hugo website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 23 Jul 2015 21:13:14 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/plot/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Hello R Markdown</title>
+      <link>/2015/07/23/hello-r-markdown/</link>
+      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
+      
+      <guid>/2015/07/23/hello-r-markdown/</guid>
+      <description>R MarkdownThis is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
+You can embed an R code chunk like this:
+summary(cars)## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
+    </item>
+    
+    <item>
+      <title>t-test</title>
+      <link>/1970/01/01/t-test/</link>
+      <pubDate>Thu, 01 Jan 1970 08:33:38 +0800</pubDate>
+      
+      <guid>/1970/01/01/t-test/</guid>
+      <description>双样本T检验和配对T检验，应用在不同的场合。
+打一个简单的例子： 双样本T检验，张三和李四比帅 配对T检验，张三戴红帽子帅还是绿帽子帅？ http://blog.sina.com.cn/s/blog_5d188bc40101p6xu.html
+配对t检验是两组数据中的数据一一对应， 计算一一对应的数据间的差值，再计算出所有差值的的平均数、标准差，从而进行t检验。
+而成组t检验是两组数据各自求出平均数、标准差来进行t检验。
+如： 甲厂：1.2；1.3；1.1；0.9；0.9 乙厂：1.1；0.8；1.4；1.1；0.7 可以用配对t检验。 如： 甲厂：1.2；1.3；1.1；0.9；0.9 乙厂：1.1；0.8；1.4；1.1 没有一一对应的数据组，就用成组t检验。  成组T检验是两组之间的比较，成对是一组前后的比较
+两独立样本t检验： 两独立样本t检验就是根据样本数据对两个样本来自的两独立总体的均值是否有显著差异进行推断； 进行两独立样本t检验的条件是，两样本的总体相互独立且符合正态分布； 第一步：零假设：H0 μ1=μ2 第二步：判断两总体方差是否相等。（F检验，如果F对应的p值小于0.05，则方差不等；若果F对应的p值大于0.05，则方差相等） 第三步：构造t统计量并计算t和p值 第四步：判断，若p&amp;lt;0.05,则两总体均值存在显著差异，反之则不存在。 SPSS利用实例：数据如下  配对样本t检验 配对样本是指对同一样本进行两次测试所获得的两组数据，或对两个完全的样本在不同条件下进行测试所得到的两组数据； 两独立样本t检验就是根据样本数据对两个配对样本来自的两配对总体的均值是否有显著差异进行推断； 两配对样本t检验的前提条件：两样本是配对的（数量一样，顺序不能变），服从正态分布 Spss检验步骤：  第二张图显示相关系数为0.302，p值为0.621&amp;gt;0.05，所以两配对变量无相关性 第三张图显示p为0.005&amp;lt;0.05，故认为两配对样本存在显著性差异 独立样本和配对样本t检验的差异： 前者要求两样本相互独立，后者要求两样本相互配对； 两者的统计量不一样； 前者需要考虑方差相等或不等两种情况，而后者方差通常是不等的。
+source (&amp;quot;http://bioconductor.org/biocLite.R&amp;quot;) biocLite(“genefilter”) #在线安装genefilter包 library(genefilter) data=read.table(file=&amp;quot;e:/sample.txt&amp;quot;,header=TRUE) #导入基因表达谱文件 data1=data[,-1] #指定数据所在输入文件中的位置 data1=matrix(nrow=13000,ncol=10) for(i in c(1:13000)) for(j in c(1:10)) # 行、列的循环计算 data1[i,j]=as.numeric(data[i,j]) ttrest=rowttests(data1,factor(c(rep(0,5),rep(1,5)))) #指定分组后进行逐个基因的匹配的t检验 write.table(ttrest,&amp;quot;e:/sample_result.txt&amp;quot;,sep=&amp;quot;\t&amp;quot;) #输出检验后的结果 结果： http://7xo6kd.com1.z0.glb.clouddn.com/upload-ueditor-image-20160815-147****4969008861.png 这样就得到了每个基因对应的显著性p值。这个方法不仅可以用来筛选显著差异表达的基因，由于本代码方法是基于匹配的t检验的，对于组间有重复的实验数据均可以用该方法来进行差异显著性的检验，适用范围是比较宽广的。  双样本t检验2 Sample T-TEST和成对t检验Paired Test的意思和区别</description>
+    </item>
+    
+  </channel>
+</rss>

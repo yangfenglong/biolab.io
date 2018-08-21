@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.47" />
+
+
+<title>t-test - A Hugo website</title>
+<meta property="og:title" content="t-test - A Hugo website">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdn.bootcss.com/highlight.js/9.11.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">t-test</h1>
+
+    
+    <span class="article-date">1970/01/01</span>
+    
+
+    <div class="article-content">
+      
+
+<p>双样本T检验和配对T检验，应用在不同的场合。</p>
+
+<h2 id="打一个简单的例子">打一个简单的例子：</h2>
+
+<p>双样本T检验，张三和李四比帅
+配对T检验，张三戴红帽子帅还是绿帽子帅？
+<a href="http://blog.sina.com.cn/s/blog_5d188bc40101p6xu.html">http://blog.sina.com.cn/s/blog_5d188bc40101p6xu.html</a></p>
+
+<p>配对t检验是两组数据中的数据一一对应，
+<strong>计算一一对应的数据间的差值，再计算出所有差值的的平均数、标准差，从而进行t检验</strong>。</p>
+
+<p>而成组t检验是两组数据各自求出平均数、标准差来进行t检验。</p>
+
+<pre><code>如：
+甲厂：1.2；1.3；1.1；0.9；0.9
+乙厂：1.1；0.8；1.4；1.1；0.7
+可以用配对t检验。
+如：
+甲厂：1.2；1.3；1.1；0.9；0.9
+乙厂：1.1；0.8；1.4；1.1
+没有一一对应的数据组，就用成组t检验。
+</code></pre>
+
+<p>成组T检验是两组之间的比较，成对是一组前后的比较</p>
+
+<pre><code>两独立样本t检验：
+两独立样本t检验就是根据样本数据对两个样本来自的两独立总体的均值是否有显著差异进行推断；
+进行两独立样本t检验的条件是，两样本的总体相互独立且符合正态分布；
+第一步：零假设：H0 μ1=μ2
+第二步：判断两总体方差是否相等。（F检验，如果F对应的p值小于0.05，则方差不等；若果F对应的p值大于0.05，则方差相等）
+第三步：构造t统计量并计算t和p值
+第四步：判断，若p&lt;0.05,则两总体均值存在显著差异，反之则不存在。
+SPSS利用实例：数据如下
+</code></pre>
+
+<p><img src="http://s16.sinaimg.cn/large/001HHwRSzy6HoPAOSXZ2f&amp;690" alt="" /></p>
+
+<pre><code>配对样本t检验
+配对样本是指对同一样本进行两次测试所获得的两组数据，或对两个完全的样本在不同条件下进行测试所得到的两组数据；
+两独立样本t检验就是根据样本数据对两个配对样本来自的两配对总体的均值是否有显著差异进行推断；
+两配对样本t检验的前提条件：两样本是配对的（数量一样，顺序不能变），服从正态分布
+Spss检验步骤：
+</code></pre>
+
+<p><img src="http://s3.sinaimg.cn/large/001HHwRSzy6HoPDnYzg52&amp;690" alt="" />
+第二张图显示相关系数为0.302，p值为0.621&gt;0.05，所以两配对变量无相关性
+第三张图显示p为0.005&lt;0.05，故认为两配对样本存在显著性差异
+独立样本和配对样本t检验的差异：
+前者要求两样本相互独立，后者要求两样本相互配对；
+两者的统计量不一样；
+前者需要考虑方差相等或不等两种情况，而后者方差通常是不等的。</p>
+
+<pre><code>source (&quot;http://bioconductor.org/biocLite.R&quot;)
+
+biocLite(“genefilter”)  #在线安装genefilter包
+
+library(genefilter)
+
+
+
+data=read.table(file=&quot;e:/sample.txt&quot;,header=TRUE) #导入基因表达谱文件
+
+data1=data[,-1] #指定数据所在输入文件中的位置
+
+data1=matrix(nrow=13000,ncol=10)
+
+
+
+for(i in c(1:13000)) 
+
+for(j in c(1:10)) # 行、列的循环计算
+
+data1[i,j]=as.numeric(data[i,j])
+
+
+
+ttrest=rowttests(data1,factor(c(rep(0,5),rep(1,5)))) #指定分组后进行逐个基因的匹配的t检验
+
+write.table(ttrest,&quot;e:/sample_result.txt&quot;,sep=&quot;\t&quot;) #输出检验后的结果
+
+结果：
+
+
+
+http://7xo6kd.com1.z0.glb.clouddn.com/upload-ueditor-image-20160815-147****4969008861.png 
+
+
+
+这样就得到了每个基因对应的显著性p值。这个方法不仅可以用来筛选显著差异表达的基因，由于本代码方法是基于匹配的t检验的，对于组间有重复的实验数据均可以用该方法来进行差异显著性的检验，适用范围是比较宽广的。
+</code></pre>
+
+<p>双样本t检验2 Sample T-TEST和成对t检验Paired Test的意思和区别</p>
+
+<p>成对t检验Paired Test是对来自同一总体的样本，在不同条件影响下获取的2组样本进行分析，以评价不同条件是否对其有显著影响。不同条件可以是不同存放环境、不同的测量系统等。</p>
+
+<p>双样本t检验2 Sample T-TEST是对通过2组样本来评判其是否来自2个“总体均值不同”的总体，即评判样本的制造环境是否产生变化。</p>
+
+<h2 id="主要区别">主要区别：</h2>
+
+<p>数据源产生于制造中与制造后。或则说P－T的数据结果增加了不同条件对其的影响，是综合效果。</p>
+
+<p>Paired Test配对检验法：用在2个样本有关联的情况下，Paired Test在统计原理上与2 Sample T-TEST有本质的不同。Paired Test忽略成对数据对与对之间的关系，以对间的差来构造检验统计量，只适合有相互联系的两个样本的检验，而2 Sample T-TEST只适合满足独立条件的两个样本的检验。</p>
+
+<p>它们使用的条件不一样。2 Sample T-TEST是从整体上考察两组数据间的关系（两组数据的样本大小可以不同，），说白了就是只考虑数据的平均值和方差，Paired Test是考察两组数据中一一对应的两个数据间的关系（既然是一一对应，那两组数据的样本数必须一样）。举个例子，例如你要考察一台设备改造前后生产的产品有没有差别，那你应该用2 Sample T-TEST。如果你要考察一组产品在长时间存放之后有没有变化，那你应该用P－T。</p>
+
+<p>Pair-t一般用于同一研究对象分别给于两种不同处理的效果比较或同一研究对象处理前后的效果比较。
+前提：1.两样本观察数量相同。
+         2.两样本观察顺序不能随意改变
+         3.样本来自于古和正态分布的总体。</p>
+
+<h2 id="用哪种方法取决于抽取的两组样本是独立还是配对">用哪种方法取决于抽取的两组样本是独立还是配对。</h2>
+
+<p>两组样本（成品），一组用A的原材料，另一组用B的原材料。两组样本平均值的差异不仅包含因A和B不同引起的差异，还包含每组内不同产品间的差异。这时使用2sample t，实际上是对组间变异和组内变异作比较。</p>
+
+<p>假如样品是机械组装的产品，一组使用的是A的零件，另一组使用的是B的零件，假设此零件可以拆卸、重新装配并且重复装配不产生额外变异。将使用A的零件的一组产品换装B的零件，得到产品换装零件前后的区别。这种差异仅是由换装零件造成。此时应该使用paried t</p>
+
+<p>相关的类型
+ ==============</p>
+
+<p><a href="http://bbs.pinggu.org/thread-3675473-1-1.html">7.3相关</a></p>
+
+<p>相关系数可以用来描述定量变量之间的关系。相关系数的符号（±）表明关系的方向（正相关或负相关），其值的大小表示关系的强弱程度（完全不相关时为0，完全相关时为1）。除了基础安装以外，我们还将使用psych和ggm包。</p>
+
+<h1 id="7-3-1-相关的类型">7.3.1 相关的类型</h1>
+
+<h2 id="1-pearson-spearman和kendall相关">1.Pearson、Spearman和Kendall相关</h2>
+
+<pre><code>Pearson积差相关系数衡量了两个定量变量之间的线性相关程度。Spearman等级相关系数则衡
+量分级定序变量之间的相关程度。Kendall’s Tau相关系数也是一种非参数的等级相关度量。
+cor()函数可以计算这三种相关系数，而cov()函数可用来计算协方差。两个函数的参数有
+很多，其中与相关系数的计算有关的参数可以简化为：cor(x,use=,method=)
+x :矩阵或数据框
+use :指定缺失数据的处理方式。可选的方式为all.obs（假设不存在缺失数据——遇到缺失数据时将报
+错）、everything（遇到缺失数据时，相关系数的计算结果将被设为missing）、complete.obs
+（行删除）以及 pairwise.complete.obs（成对删除，pairwise deletion）
+method :指定相关系数的类型。可选类型为pearson、spearman或kendall
+</code></pre>
+
+<p>首个语句计算了方差和协方差，第二个语句则计算了Pearson积差相关系数，而第三个语句计算
+了Spearman等级相关系数</p>
+
+<h2 id="2-偏相关">2.偏相关</h2>
+
+<p>偏相关是指在控制一个或多个定量变量时，另外两个定量变量之间的相互关系。你可以使用
+ggm包中的pcor()函数计算偏相关系数,函数调用格式为：pcor(u,S)
+其中的u是一个数值向量，前两个数值表示要计算相关系数的变量下标，其余的数值为条件变量
+（即要排除影响的变量）的下标。S为变量的协方差阵。</p>
+
+<h2 id="7-3-2-相关性的显著性检验">7.3.2 相关性的显著性检验</h2>
+
+<p>可以使用cor.test()函数对单个的Pearson、Spearman和Kendall相关系数进行检验。简化后的使用格式为：cor.test(x,y,alternative-,method=)
+其中的x和y为要检验相关性的变量，alternative则用来指定进行双侧检验或单侧检验（取值
+为&rdquo;two.side&rdquo;、&rdquo;less&rdquo;或&rdquo;greater&rdquo;），而method用以指定要计算的相关类型（&rdquo;pearson&rdquo;、
+&ldquo;kendall&rdquo;或&rdquo;spearman&rdquo;）。当研究的假设为总体的相关系数小于0时，请使用alternative=
+&ldquo;less&rdquo;。在研究的假设为总体的相关系数大于0时，应使用alternative=&ldquo;greater&rdquo;。在默认情况下，假设为alternative=&ldquo;two.side&rdquo;（总体相关系数不等于0）
+cor.test每次只能检验一种相关关系。psych包中提供的corr.test()函数可以一次做更多事情。corr.test()函数可以为Pearson、Spearman或Kendall相关计算相关矩阵和显著性水平。</p>
+
+<pre><code>&gt;library(psych)
+&gt;corr.test(states,use=”complete”)
+</code></pre>
+
+<p>参数use=的取值可为&rdquo;pairwise&rdquo;或&rdquo;complete&rdquo;（分别表示对缺失值执行成对删除或行删
+除）。参数method=的取值可为&rdquo;pearson&rdquo;（默认值）、&rdquo;spearman&rdquo;或&rdquo;kendall&rdquo;。
+。在多元正态性的假设下，psych包中的pcor.test()函数①可以用来检验在控制一个或多个额外变量时两个变量之间的条件独立性。使用格式为：pcor.test(r,q,n)
+其中的r是由pcor()函数计算得到的偏相关系数，q为要控制的变量数（以数值表示位置），n为
+样本大小。psych包中的r.test()函数提供了多种实用的显著性
+检验方法。此函数可用来检验：
+某种相关系数的显著性；
+两个独立相关系数的差异是否显著；
+两个基于一个共享变量得到的非独立相关系数的差异是否显著；
+两个基于完全不同的变量得到的非独立相关系数的差异是否显著。</p>
+
+<h1 id="7-4-t检验">7.4 t检验</h1>
+
+<h2 id="7-4-1-独立样本的t检验">7.4.1 独立样本的t检验</h2>
+
+<p>一个针对两组的独立样本t检验可以用于检验两个总体的均值相等的假设。这里假设两组数据是独立的，并且是从正态总体中抽得。检验的调用格式为：t.test(y~x,data)
+其中的y是一个数值型变量，x是一个二分变量。调用格式或为：t.test(y1,y2)
+其中的y1和y2为数值型向量（即各组的结果变量）。可选参数data的取值为一个包含了这些
+变量的矩阵或数据框。可以添加一个参数alternative=&ldquo;less&rdquo;或alternative=&ldquo;greater&rdquo;来进行有方向的检验。</p>
+
+<pre><code>&gt; t.test(Prob~So,data=UScrime)
+       Welch Two Sample t-test
+data:  Prob by So
+t = -3.8954, df = 24.925, p-value = 0.0006506
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+-0.03852569 -0.01187439
+sample estimates:
+mean in group 0 mean in group 1
+     0.03851265      0.06371269
+</code></pre>
+
+<h2 id="7-4-2-非独立样本的t检验">7.4.2 非独立样本的t检验</h2>
+
+<p>非独立样本的t检验假定组间的差异呈正态分布。
+t.test(y1,y2,parired=TRUE)其中的y1和y2为两个非独立组的数值向量</p>
+
+<pre><code>&gt; library(MASS)
+&gt; sapply(UScrime[c(&quot;U1&quot;,&quot;U2&quot;)],function(x)(c(mean=mean(x),sd=sd(x))))
+           U1       U2
+mean 95.46809 33.97872
+sd   18.02878  8.44545
+&gt; with(UScrime,t.test(U1,U2,paired=TRUE))
+       Paired t-test
+data:  U1 and U2
+t = 32.4066, df = 46, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+57.67003 65.30870
+sample estimates:
+mean of the differences
+               61.48936
+</code></pre>
+
+<h2 id="7-5-组间差异的非参数检验">7.5 组间差异的非参数检验</h2>
+
+<h3 id="7-5-1两组的比较">7.5.1两组的比较</h3>
+
+<p>若两组数据独立，可以使用Wilcoxon秩和检验来评估观测是否是从相同的概率分布中抽得的
+Wilcox.test(y~x,data)其中的y是数值型变量，而x是一个二分变量。调用格式或为：
+Wilcox.test(y1,y2)其中的y1和y2为各组的结果变量。可选参数data的取值为一个包含了这些变量的矩阵或数据框。默认进行一个双侧检验。可以添加参数exact来进行精确检验，指定alternative=&ldquo;less&rdquo;或alternative=&ldquo;greater&rdquo;进行有方向的检验。
+Wilcoxon符号秩检验是非独立样本t检验的一种非参数替代方法。它适用于两组成对数据和
+无法保证正态性假设的情境。调用格式与Mann–Whitney U检验完全相同，不过还可以添加参数
+paired=TRUE。</p>
+
+<pre><code>&gt; sapply(UScrime[c(&quot;U1&quot;,&quot;U2&quot;)],median)
+U1 U2
+92 34
+&gt; with(UScrime,wilcox.test(U1,U2,paired=TRUE))
+       Wilcoxon signed rank test withcontinuity
+       correction
+data:  U1 and U2
+V = 1128, p-value = 2.464e-09
+alternative hypothesis: true location shift is not equal to 0
+</code></pre>
+
+<h2 id="7-5-2-多于两组的比较">7.5.2 多于两组的比较</h2>
+
+<p>如果各组独立，则Kruskal—Wallis检验将是一种实用的方法。如果各组不独立（如重复测量设计或随机区组设计），那么Friedman检验会更合适。Kruskal–Wallis检验的调用格式为：
+Kruskal.test(y~A,data)其中的y是一个数值型结果变量，A是一个拥有两个或更多水平的分组变量（groupingvariable）。（若有两个水平，则它与Mann–Whitney U检验等价。）而Friedman检验的调用格式为：friedman.test(y~A|B,data)
+其中的y是数值型结果变量，A是一个分组变量，而B是一个用以认定匹配观测的区组变量（blocking
+variable）。</p>
+
+<pre><code>&gt; states&lt;-as.data.frame(cbind(state.region,state.x77))
+&gt; kruskal.test(Illiteracy~state.region,data=states)
+       Kruskal-Wallis rank sum test
+data:  Illiteracy by state.region
+Kruskal-Wallis chi-squared = 22.6723, df = 3,
+p-value = 4.726e-05
+
+
+https://www.cnblogs.com/webRobot/p/6911645.html
+</code></pre>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/highlight.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/r.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
