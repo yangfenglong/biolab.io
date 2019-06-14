@@ -14,8 +14,8 @@ The function performs the transformation from gene expression matrix to cell-spe
 This is a groups style docs.
 
 Parameters:
-
-   `data`  Gene expression matrix, rows = genes, columns = cells
+    
+    `data`  Gene expression matrix, rows = genes, columns = cells
 
 Returns:
 
