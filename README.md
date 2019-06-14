@@ -33,7 +33,7 @@ Get cells in list format
 
 Parameters:
 
-   file cells.list
+    file cells.list
 
 Returns:
 
